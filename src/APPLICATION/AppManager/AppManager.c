@@ -4,7 +4,7 @@
  * Project: Projet Esme
  *
  ***********************************************************************************************************************
- * @file      GPIO.h
+ * @file      AppManager.c
  *
  * @author    gpaultre
  * @date      14/11/2024
@@ -21,14 +21,13 @@
  ***********************************************************************************************************************
  */
 
-#ifndef GPIO_H_
-#define GPIO_H_
-
 /**********************************************************************************************************************/
 /* INCLUDE FILES                                                                                                      */
 /**********************************************************************************************************************/
+
+#include "AppManager.h"
+#include "GPIO.h"
 #include "Common.h"
-#include "ISR.h"
 
 /**********************************************************************************************************************/
 /* CONSTANTS, MACROS                                                                                                  */
@@ -38,26 +37,54 @@
 /* TYPES                                                                                                              */
 /**********************************************************************************************************************/
 
-typedef enum
+/**********************************************************************************************************************/
+/* PRIVATE VARIABLES                                                                                                  */
+/**********************************************************************************************************************/
+
+/**********************************************************************************************************************/
+/* PRIVATE FUNCTION PROTOTYPES                                                                                        */
+/**********************************************************************************************************************/
+
+static bool AppManager_handleInterrupt(ISR_tenuPeripheral peripheralId); //void AppManager_handleInterrupt(ISR_tenuPeripheral peripheralId) recommended.
+
+/**********************************************************************************************************************/
+/* PRIVATE FUNCTION DEFINITIONS                                                                                       */
+/**********************************************************************************************************************/
+
+static bool AppManager_handleInterrupt(ISR_tenuPeripheral peripheralId)
 {
-    GPIO_OK = 0,
-    GPIO_NOK
-} GPIO_status;
+    if (peripheralId == ISR_ePERIPHERAL_INPUT_GPIO)
+    {
+        static bool ledState = false;
 
-typedef bool (*GPIO_callback)(ISR_tenuPeripheral peripheralId);
+        CMN_systemPrintf("Button Pressed!\r\n");
+
+        if (ledState)
+        {
+            GPIO_setGpioLow();
+        }
+        else
+        {
+            GPIO_setGpioHigh();
+        }
+        ledState = !ledState;
+
+        // return; recommended
+
+        return true;
+    }
+    return false;
+}
 
 /**********************************************************************************************************************/
-/* PUBLIC FUNCTION PROTOTYPES                                                                                         */
+/* PUBLIC FUNCTION DEFINITIONS                                                                                        */
 /**********************************************************************************************************************/
 
-GPIO_status GPIO_init(void);
+AppManager_status AppManager_init(void)
+{
+    GPIO_registerCallback(AppManager_handleInterrupt);
 
-GPIO_status GPIO_setGpioHigh(void);
+    return APPMANAGER_OK;
+}
 
-GPIO_status GPIO_setGpioLow(void);
-
-GPIO_status GPIO_registerCallback(GPIO_callback callback);
-
-/*--------------------------------------------------------------------------------------------------------------------*/
-#endif /* GPIO_H_ */
 /*--------------------------------------------------------------------------------------------------------------------*/

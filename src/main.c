@@ -53,7 +53,7 @@
 /* APPLICATION INCLUDES          */
 /*********************************/
 // Add the required includes for the application modules here...
-
+#include "AppManager.h"
 
 /**********************************************************************************************************************/
 /* CONSTANTS, MACROS                                                                                                  */
@@ -128,6 +128,7 @@ void main(void)
   /* APPLICATION INITIALIZATIONS   */
   /*********************************/
   // Add your initialization function here for the application modules...
+  AppManager_init();
 
   // End of the Init:
   CMN_vidEndInit();
@@ -135,15 +136,11 @@ void main(void)
   // Main program loop:
   while(true)
   {
-    GPIO_setGpioHigh();
-    __delay_ms(500);
-    GPIO_setGpioLow();
-
     // Performs a delay of 0.5s:
     __delay_ms(500);
     
     // Send a "Hello World" message to the serial port:
-    CMN_systemPrintf("Hello World ! \r\n"); // This message will be sent to the serial port on PUTTY
+    //CMN_systemPrintf("Hello World ! \r\n"); // This message will be sent to the serial port on PUTTY
   }
 
   // We should never reach this code part:

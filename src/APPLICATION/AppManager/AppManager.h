@@ -4,7 +4,7 @@
  * Project: Projet Esme
  *
  ***********************************************************************************************************************
- * @file      GPIO.h
+ * @file      AppManager.h
  *
  * @author    gpaultre
  * @date      14/11/2024
@@ -21,12 +21,13 @@
  ***********************************************************************************************************************
  */
 
-#ifndef GPIO_H_
-#define GPIO_H_
+#ifndef APPMANAGER_H_
+#define APPMANAGER_H_
 
 /**********************************************************************************************************************/
 /* INCLUDE FILES                                                                                                      */
 /**********************************************************************************************************************/
+
 #include "Common.h"
 #include "ISR.h"
 
@@ -40,24 +41,16 @@
 
 typedef enum
 {
-    GPIO_OK = 0,
-    GPIO_NOK
-} GPIO_status;
-
-typedef bool (*GPIO_callback)(ISR_tenuPeripheral peripheralId);
+    APPMANAGER_OK = 0,
+    APPMANAGER_NOK
+} AppManager_status;
 
 /**********************************************************************************************************************/
 /* PUBLIC FUNCTION PROTOTYPES                                                                                         */
 /**********************************************************************************************************************/
 
-GPIO_status GPIO_init(void);
-
-GPIO_status GPIO_setGpioHigh(void);
-
-GPIO_status GPIO_setGpioLow(void);
-
-GPIO_status GPIO_registerCallback(GPIO_callback callback);
+AppManager_status AppManager_init(void);
 
 /*--------------------------------------------------------------------------------------------------------------------*/
-#endif /* GPIO_H_ */
+#endif /* APPMANAGER_H_ */
 /*--------------------------------------------------------------------------------------------------------------------*/
