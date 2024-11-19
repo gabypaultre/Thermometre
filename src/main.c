@@ -137,7 +137,7 @@ void main(void)
     __delay_ms(500);
     
     // Send a "Hello World" message to the serial port:
-    CMN_systemPrintf("Hello World ! \r\n");
+    CMN_systemPrintf("Hello World ! \r\n"); // This message will be sent to the serial port on PUTTY
   }
 
   // We should never reach this code part:
