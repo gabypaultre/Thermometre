@@ -46,6 +46,7 @@
 /* DRIVER INCLUDES               */
 /*********************************/
 #include "LCD.h"
+#include "MCP9700.h"
 
 // Add the required includes for the driver modules here...
 
@@ -136,8 +137,10 @@ void main(void)
   // Main program loop:
   while(true)
   {
+    APPM_vidStart();
+    
     // Performs a delay of 0.5s:
-    __delay_ms(500);
+    //__delay_ms(500);
     
     // Send a "Hello World" message to the serial port:
     //CMN_systemPrintf("Hello World ! \r\n"); // This message will be sent to the serial port on PUTTY

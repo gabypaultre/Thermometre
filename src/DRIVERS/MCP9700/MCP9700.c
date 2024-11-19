@@ -4,7 +4,7 @@
  * Project: Projet Esme
  *
  ***********************************************************************************************************************
- * @file      AppManager.c
+ * @file      MCP9700.c
  *
  * @author    gpaultre
  * @date      14/11/2024
@@ -25,15 +25,20 @@
 /* INCLUDE FILES                                                                                                      */
 /**********************************************************************************************************************/
 
-#include "AppManager.h"
-#include "GPIO.h"
 #include "MCP9700.h"
-#include "CLOCK.h"
 #include "Common.h"
 
 /**********************************************************************************************************************/
 /* CONSTANTS, MACROS                                                                                                  */
 /**********************************************************************************************************************/
+
+#define ADC_REF_VOLTAGE_MV 3300
+#define ADC_RESOLUTION 1024
+
+#define ADC_MIN_VALUE 31
+#define ADC_MAX_VALUE 558
+#define TEMP_MIN -40
+#define TEMP_MAX 125
 
 /**********************************************************************************************************************/
 /* TYPES                                                                                                              */
@@ -47,66 +52,65 @@
 /* PRIVATE FUNCTION PROTOTYPES                                                                                        */
 /**********************************************************************************************************************/
 
-static bool AppManager_handleInterrupt(ISR_tenuPeripheral peripheralId);
+static MCP9700_status MCP9700_calculateTemperature(uint16_t adcValue, int16_t *temperature);
 
 /**********************************************************************************************************************/
 /* PRIVATE FUNCTION DEFINITIONS                                                                                       */
 /**********************************************************************************************************************/
 
-static bool AppManager_handleInterrupt(ISR_tenuPeripheral peripheralId)
+static MCP9700_status MCP9700_calculateTemperature(uint16_t adcValue, int16_t *temperature)
 {
-    if (peripheralId == ISR_ePERIPHERAL_INPUT_GPIO)
+    if (temperature == NULL)
     {
-        static bool ledState = false;
-
-        CMN_systemPrintf("Button Pressed!\r\n");
-
-        if (ledState)
-        {
-            GPIO_setGpioLow();
-        }
-        else
-        {
-            GPIO_setGpioHigh();
-        }
-        ledState = !ledState;
-
-        return true;
+        return MCP9700_NOK;
     }
-    return false;
+
+    // Limiter adcValue aux bornes définies
+    if (adcValue <= ADC_MIN_VALUE)
+    {
+        *temperature = TEMP_MIN;
+    }
+    else if (adcValue >= ADC_MAX_VALUE)
+    {
+        *temperature = TEMP_MAX;
+    }
+    else
+    {
+        // Interpolation linéaire pour les valeurs intermédiaires
+        *temperature = (int16_t)(TEMP_MIN + ((int32_t)(adcValue - ADC_MIN_VALUE) * (TEMP_MAX - TEMP_MIN)) / (ADC_MAX_VALUE - ADC_MIN_VALUE));
+    }
+
+    return MCP9700_OK;
 }
 
 /**********************************************************************************************************************/
 /* PUBLIC FUNCTION DEFINITIONS                                                                                        */
 /**********************************************************************************************************************/
 
-AppManager_status AppManager_init(void)
+MCP9700_status MCP9700_getTemperature(int16_t *temperature)
 {
-    GPIO_registerCallback(AppManager_handleInterrupt);
+    uint16_t adcValue = 0;
 
-    return APPMANAGER_OK;
+    if (MCP9700_getRawValue(&adcValue) != MCP9700_OK)
+    {
+        return MCP9700_NOK;
+    }
+
+    return MCP9700_calculateTemperature(adcValue, temperature);
 }
 
-void APPM_vidStart(void)
+MCP9700_status MCP9700_getRawValue(uint16_t *adcValue)
 {
-    int16_t temperature = 0;
-    MCP9700_status mcpStatus;
-
-    while (true)
+    if (adcValue == NULL)
     {
-        mcpStatus = MCP9700_getTemperature(&temperature);
-
-        if (mcpStatus == MCP9700_OK)
-        {
-            CMN_systemPrintf("Temperature value = %d°C\r\n", temperature);
-        }
-        else
-        {
-            CMN_systemPrintf("Error: Unable to retrieve temperature data.\r\n");
-        }
-
-        __delay_ms(1000);
+        return MCP9700_NOK;
     }
+
+    MCP9700_status status = (ADC_enuGetRawValue(adcValue, 1000) == ADC_eSTATUS_OK) ? MCP9700_OK : MCP9700_NOK;
+
+    CMN_systemPrintf("Raw ADC Value: %d\r\n", *adcValue); 
+
+    return status;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------*/

@@ -19,6 +19,7 @@
       <itemPath>src/TOOLS/Common/Port/Common_pt.h</itemPath>
       <itemPath>src/HARDWARE/GPIO/GPIO.h</itemPath>
       <itemPath>src/APPLICATION/AppManager/AppManager.h</itemPath>
+      <itemPath>src/DRIVERS/MCP9700/MCP9700.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -45,6 +46,7 @@
       <itemPath>src/DRIVERS/LCD/Conf/LCD_cfg.c</itemPath>
       <itemPath>src/HARDWARE/GPIO/GPIO.c</itemPath>
       <itemPath>src/APPLICATION/AppManager/AppManager.c</itemPath>
+      <itemPath>src/DRIVERS/MCP9700/MCP9700.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -102,7 +104,7 @@
         <property key="define-macros" value=""/>
         <property key="disable-optimizations" value="true"/>
         <property key="extra-include-directories"
-                  value="src\DRIVERS\LCD\Conf;src\DRIVERS\LCD\Core;src\HARDWARE\ADC\Conf;src\HARDWARE\ADC\Core;src\HARDWARE\CLOCK\Conf;src\HARDWARE\CLOCK\Core;src\HARDWARE\EUSART;src\HARDWARE\I2CM;src\HARDWARE\ISR;src\HARDWARE\TIMER;src\TOOLS\Common\Conf;src\TOOLS\Common\Core;src\TOOLS\Common\Port;src\HARDWARE\GPIO;src\APPLICATION\AppManager"/>
+                  value="src\DRIVERS\LCD\Conf;src\DRIVERS\LCD\Core;src\HARDWARE\ADC\Conf;src\HARDWARE\ADC\Core;src\HARDWARE\CLOCK\Conf;src\HARDWARE\CLOCK\Core;src\HARDWARE\EUSART;src\HARDWARE\I2CM;src\HARDWARE\ISR;src\HARDWARE\TIMER;src\TOOLS\Common\Conf;src\TOOLS\Common\Core;src\TOOLS\Common\Port;src\HARDWARE\GPIO;src\APPLICATION\AppManager;src\DRIVERS\MCP9700"/>
         <property key="favor-optimization-for" value="-speed,+space"/>
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>
