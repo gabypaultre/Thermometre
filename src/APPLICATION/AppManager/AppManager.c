@@ -31,6 +31,7 @@
 #include "CLOCK.h"
 #include "TIMER.h"
 #include "LCD.h"
+#include "SERP.h"
 #include "Common.h"
 
 /**********************************************************************************************************************/
@@ -78,10 +79,12 @@ static void AppManager_displayWelcomeMessage(void);
 
 static void AppManager_timerCallback(void)
 {
-    if (currentState == APPM_STATE_RUNNING)
+    pendingEvent = APPM_EVENT_TIMER;
+    CMN_systemPrintf("Timer triggered!\r\n");
+
+    if (SERP_enuSendMessage(SERP_MSG_ID_LIVE_SIGN, NULL, 0) != SERP_STATUS_OK)
     {
-        pendingEvent = APPM_EVENT_TIMER;
-        CMN_systemPrintf("Timer triggered!\r\n");
+        CMN_systemPrintf("Error: Unable to send message\r\n");
     }
 }
 
@@ -120,6 +123,12 @@ static void AppManager_handleEvent(void)
                 LCD_enuClearAll(LCD_eDEVICE_ID_DISPLAY);
                 LCD_enuSetCursor(LCD_eDEVICE_ID_DISPLAY, 1, 1);
                 LCD_enuPrintf(LCD_eDEVICE_ID_DISPLAY, "State: RUNNING");
+
+                const uint8_t helloworld[] = "Hello World";
+                if (SERP_enuSendMessage(SERP_MSG_ID_CUSTOM, helloworld, sizeof(helloworld)) != SERP_STATUS_OK)
+                {
+                    CMN_systemPrintf("Error: Unable to send Hello World\r\n");
+                }
             }
             else
             {
@@ -172,6 +181,8 @@ static void AppManager_handleEvent(void)
 AppManager_status AppManager_init(void)
 {
     GPIO_registerCallback(AppManager_handleInterrupt);
+
+    SERP_vidInitialize();
 
     TIM0_vidInitialize();
 

@@ -45,7 +45,7 @@
 /**
  * @brief Macro used to define whether the use of printf is enabled or not
  */
-#define CMN_ENABLE_PRINTF                                   true
+#define CMN_ENABLE_PRINTF                                   false //true
 
 
 /*--------------------------------------------------------------------------------------------------------------------*/
