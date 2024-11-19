@@ -56,6 +56,8 @@ GPIO_status GPIO_setGpioHigh(void);
 
 GPIO_status GPIO_setGpioLow(void);
 
+GPIO_status GPIO_toggleGpio(void);
+
 GPIO_status GPIO_registerCallback(GPIO_callback callback);
 
 /*--------------------------------------------------------------------------------------------------------------------*/

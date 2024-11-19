@@ -96,14 +96,18 @@ GPIO_status GPIO_init(void)
 GPIO_status GPIO_setGpioHigh(void)
 {
     LATAbits.LATA4 = 1;
-
     return GPIO_OK;
 }
 
 GPIO_status GPIO_setGpioLow(void)
 {
     LATAbits.LATA4 = 0;
+    return GPIO_OK;
+}
 
+GPIO_status GPIO_toggleGpio(void)
+{
+    LATAbits.LATA4 = !LATAbits.LATA4;
     return GPIO_OK;
 }
 
