@@ -73,6 +73,8 @@ static void AppManager_timerCallback(void);
 static void AppManager_handleEvent(void);
 static void AppManager_displayWelcomeMessage(void);
 
+static void AppManager_handleReceivedMessage(SERP_tenuMsgId msgId, const uint8_t *data, uint16_t dataLength);
+
 /**********************************************************************************************************************/
 /* PRIVATE FUNCTION DEFINITIONS                                                                                       */
 /**********************************************************************************************************************/
@@ -174,6 +176,32 @@ static void AppManager_handleEvent(void)
     pendingEvent = APPM_EVENT_NONE;
 }
 
+static void AppManager_handleReceivedMessage(SERP_tenuMsgId msgId, const uint8_t *data, uint16_t dataLength)
+{
+    CMN_systemPrintf("AppManager received message ID=%d, Length=%d\r\n", msgId, dataLength);
+
+    switch (msgId)
+    {
+        case SERP_MSG_ID_START_MEASURE:
+            CMN_systemPrintf("START command received\r\n");
+            // Ajouter ici le traitement pour le démarrage de la mesure
+            currentState = APPM_STATE_RUNNING;
+            break;
+
+        case SERP_MSG_ID_STOP_MEASURE:
+            CMN_systemPrintf("STOP command received\r\n");
+            // Ajouter ici le traitement pour l'arrêt de la mesure
+            currentState = APPM_STATE_SUSPENDED;
+            AppManager_displayWelcomeMessage();
+            break;
+
+        default:
+            CMN_systemPrintf("Unknown message ID: %d\r\n", msgId);
+            break;
+    }
+}
+
+
 /**********************************************************************************************************************/
 /* PUBLIC FUNCTION DEFINITIONS                                                                                        */
 /**********************************************************************************************************************/
@@ -183,6 +211,13 @@ AppManager_status AppManager_init(void)
     GPIO_registerCallback(AppManager_handleInterrupt);
 
     SERP_vidInitialize();
+
+    // Enregistrer le callback pour recevoir les messages
+    if (SERP_enuRegisterAppManagerCallback(AppManager_handleReceivedMessage) != SERP_STATUS_OK)
+    {
+        CMN_systemPrintf("Error: Unable to register AppManager callback with SERP\r\n");
+        return APPMANAGER_NOK;
+    }
 
     TIM0_vidInitialize();
 

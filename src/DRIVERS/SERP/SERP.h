@@ -63,6 +63,8 @@ typedef enum SERP_tenuStatus
     SERP_STATUS_ENCODING_ERROR
 } SERP_tenuStatus;
 
+typedef void (*SERP_tpfAppManagerCallback)(SERP_tenuMsgId msgId, const uint8_t *data, uint16_t dataLength);
+
 /**********************************************************************************************************************/
 /* PUBLIC FUNCTION PROTOTYPES                                                                                         */
 /**********************************************************************************************************************/
@@ -70,6 +72,8 @@ typedef enum SERP_tenuStatus
 void SERP_vidInitialize(void);
 
 SERP_tenuStatus SERP_enuSendMessage(SERP_tenuMsgId enuMsgId, const uint8_t *pu8Data, uint16_t u16DataSize);
+
+SERP_tenuStatus SERP_enuRegisterAppManagerCallback(SERP_tpfAppManagerCallback callback);
 
 /**********************************************************************************************************************/
 #endif /* SERP_H_ */
