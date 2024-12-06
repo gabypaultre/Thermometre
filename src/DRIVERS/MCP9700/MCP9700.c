@@ -54,6 +54,8 @@
 
 static MCP9700_status MCP9700_calculateTemperature(uint16_t adcValue, int16_t *temperature);
 
+static MCP9700_status MCP9700_getRawValue(uint16_t *adcValue);
+
 /**********************************************************************************************************************/
 /* PRIVATE FUNCTION DEFINITIONS                                                                                       */
 /**********************************************************************************************************************/
@@ -83,6 +85,21 @@ static MCP9700_status MCP9700_calculateTemperature(uint16_t adcValue, int16_t *t
     return MCP9700_OK;
 }
 
+
+static MCP9700_status MCP9700_getRawValue(uint16_t *adcValue)
+{
+    if (adcValue == NULL)
+    {
+        return MCP9700_NOK;
+    }
+
+    MCP9700_status status = (ADC_enuGetRawValue(adcValue, 1000) == ADC_eSTATUS_OK) ? MCP9700_OK : MCP9700_NOK;
+
+    CMN_systemPrintf("Raw ADC Value: %d\r\n", *adcValue); 
+
+    return status;
+}
+
 /**********************************************************************************************************************/
 /* PUBLIC FUNCTION DEFINITIONS                                                                                        */
 /**********************************************************************************************************************/
@@ -99,18 +116,6 @@ MCP9700_status MCP9700_getTemperature(int16_t *temperature)
     return MCP9700_calculateTemperature(adcValue, temperature);
 }
 
-MCP9700_status MCP9700_getRawValue(uint16_t *adcValue)
-{
-    if (adcValue == NULL)
-    {
-        return MCP9700_NOK;
-    }
 
-    MCP9700_status status = (ADC_enuGetRawValue(adcValue, 1000) == ADC_eSTATUS_OK) ? MCP9700_OK : MCP9700_NOK;
-
-    CMN_systemPrintf("Raw ADC Value: %d\r\n", *adcValue); 
-
-    return status;
-}
 
 /*--------------------------------------------------------------------------------------------------------------------*/

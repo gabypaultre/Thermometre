@@ -79,8 +79,13 @@ static void SERP_treatReceivedMessage(void);
 
 static void SERP_vidTimerCallback(void)
 {
-    (void)SERP_enuSendMessage(SERP_MSG_ID_LIVE_SIGN, NULL, 0);
+     (void)SERP_enuSendMessage(SERP_MSG_ID_LIVE_SIGN, NULL, 0);
 }
+
+// n'est jamais appelé car AppManager Init avec bool success = TIM0_bRegisterTimerCbk(AppManager_timerCallback) FAUX;
+// Elle est appelée dans SERP_vidInitialize
+
+
 
 
 static void SERP_vidRxCallback(char const * const kpkau8Data,
@@ -218,45 +223,36 @@ void SERP_vidInitialize(void)
 
 SERP_tenuStatus SERP_enuSendMessage(SERP_tenuMsgId enuMsgId, const uint8_t *pu8Data, uint16_t u16DataSize)
 {
-    uint8_t au8EncodedMessage[SERP_MAX_MSG_DATA_SIZE + 10]; // Buffer pour le message encodé
-    uint16_t u16EncodedIndex = 0;
-
     // Vérifications de base
     if (!SERP_bIsInitialized) return SERP_STATUS_NOK; // Driver non initialisé
     if (u16DataSize > SERP_MAX_MSG_DATA_SIZE) return SERP_STATUS_ENCODING_ERROR; // Taille des données invalide
 
-    // Ajout du START_BYTE
-    au8EncodedMessage[u16EncodedIndex++] = SERP_START_BYTE;
+    // Envoi du START_BYTE
+    if (EUSART_vidSendChar((char)SERP_START_BYTE, 100) != EUSART_eSTATUS_OK) return SERP_STATUS_NOK;
 
-    // Ajout du MSG_ID
-    au8EncodedMessage[u16EncodedIndex++] = (uint8_t)enuMsgId;
+    // Envoi du MSG_ID
+    if (EUSART_vidSendChar((char)enuMsgId, 100) != EUSART_eSTATUS_OK) return SERP_STATUS_NOK;
 
-    // Ajout de la longueur des données (MSG_LENGTH) en LSB first
-    au8EncodedMessage[u16EncodedIndex++] = (uint8_t)(u16DataSize & 0xFF); // LSB
-    au8EncodedMessage[u16EncodedIndex++] = (uint8_t)((u16DataSize >> 8) & 0xFF); // MSB
+    // Envoi de la longueur des données (MSG_LENGTH) en LSB first
+    if (EUSART_vidSendChar((char)(u16DataSize & 0xFF), 100) != EUSART_eSTATUS_OK) return SERP_STATUS_NOK;
+    if (EUSART_vidSendChar((char)((u16DataSize >> 8) & 0xFF), 100) != EUSART_eSTATUS_OK) return SERP_STATUS_NOK;
 
-    // Encodage des données (avec gestion des octets problématiques)
+    // Envoi des données encodées
     for (uint16_t i = 0; i < u16DataSize; i++)
     {
-        if (pu8Data[i] == SERP_START_BYTE || pu8Data[i] == SERP_STOP_BYTE || pu8Data[i] == SERP_ESCAPE_BYTE)
+        // Si un caractère nécessite un échappement
+        if ((pu8Data[i] == SERP_START_BYTE) || (pu8Data[i] == SERP_STOP_BYTE) || (pu8Data[i] == SERP_ESCAPE_BYTE))
         {
-            au8EncodedMessage[u16EncodedIndex++] = SERP_ESCAPE_BYTE; // Ajout de l'échappement
+            // Envoi de l'octet d'échappement
+            if (EUSART_vidSendChar((char)SERP_ESCAPE_BYTE, 100) != EUSART_eSTATUS_OK) return SERP_STATUS_NOK;
         }
-        au8EncodedMessage[u16EncodedIndex++] = pu8Data[i];
+
+        // Envoi de l'octet de donnée
+        if (EUSART_vidSendChar((char)pu8Data[i], 100) != EUSART_eSTATUS_OK) return SERP_STATUS_NOK;
     }
 
-    // Ajout du STOP_BYTE
-    au8EncodedMessage[u16EncodedIndex++] = SERP_STOP_BYTE;
-
-    // Envoi du message via le EUSART
-    for (uint16_t i = 0; i < u16EncodedIndex; i++)
-    {
-        // Utilisation de la fonction EUSART_vidSendChar avec un timeout
-        if (EUSART_vidSendChar((char)au8EncodedMessage[i], 100) != EUSART_eSTATUS_OK)
-        {
-            return SERP_STATUS_NOK; // Retourner une erreur si l'envoi échoue
-        }
-    }
+    // Envoi du STOP_BYTE
+    if (EUSART_vidSendChar((char)SERP_STOP_BYTE, 100) != EUSART_eSTATUS_OK) return SERP_STATUS_NOK;
 
     return SERP_STATUS_OK;
 }

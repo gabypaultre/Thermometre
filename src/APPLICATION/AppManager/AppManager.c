@@ -117,7 +117,16 @@ static void AppManager_handleEvent(void)
     switch (currentState)
     {
         case APPM_STATE_SUSPENDED:
-            if (pendingEvent == APPM_EVENT_BUTTON_PRESSED)
+
+            if (pendingEvent == APPM_EVENT_TIMER)
+            {
+                if (SERP_enuSendMessage(SERP_MSG_ID_LIVE_SIGN, NULL, 0) != SERP_STATUS_OK)
+                {
+                    CMN_systemPrintf("Error: Unable to send heartbeat message in SUSPENDED state\r\n");
+                }
+            }
+            
+            else if (pendingEvent == APPM_EVENT_BUTTON_PRESSED)
             {
                 currentState = APPM_STATE_RUNNING;
                 CMN_systemPrintf("State changed to RUNNING\r\n");
@@ -141,6 +150,9 @@ static void AppManager_handleEvent(void)
         case APPM_STATE_RUNNING:
             if (pendingEvent == APPM_EVENT_TIMER)
             {
+                int8_t temperature = 0;
+                MCP9700_status mcpStatus;
+
                 mcpStatus = MCP9700_getTemperature(&temperature);
 
                 if (mcpStatus == MCP9700_OK)
@@ -148,6 +160,12 @@ static void AppManager_handleEvent(void)
                     LCD_enuClearAll(LCD_eDEVICE_ID_DISPLAY);
                     LCD_enuSetCursor(LCD_eDEVICE_ID_DISPLAY, 1, 1);
                     LCD_enuPrintf(LCD_eDEVICE_ID_DISPLAY, "Temp: %d deg C", temperature);
+
+                    if (SERP_enuSendMessage(SERP_MSG_ID_TEMPERATURE, (uint8_t *)&temperature, 1) != SERP_STATUS_OK)
+                    {
+                        CMN_systemPrintf("Error: Unable to send temperature to IHM\r\n");
+                    }
+
                 }
                 else
                 {
