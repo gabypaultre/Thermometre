@@ -38,17 +38,14 @@ Ce dépôt contient les fichiers suivants :
 - **[README.md](./README.md)** : Ce fichier.
 - **[.gitignore](./.gitignore)** : Liste des fichiers à ignorer dans le dépôt Git.
 
----
 
 Voici les schémas de la maquette du projet :
 
 ![Raccordement pinout PIC18F47Q10](.img/Vue_hardware_maquette.png)
 
-**Vue d'ensemble de la maquette matérielle utilisée dans le projet.**
 
 ![Vue hardware maquette](.img/Raccordement_pinout_PIC18F47Q10.png)
 
-**Schéma du raccordement du PIC18F47Q10**.
 
 ---
 
