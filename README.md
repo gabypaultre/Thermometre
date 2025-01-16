@@ -33,6 +33,9 @@ Ce dépôt contient les fichiers suivants :
   - **[HARDWARE/TIMER/](./src/HARDWARE/TIMER/)** : Gestion du timer pour la périodicité des mesures.
 - **[TOOLS/Common/](./TOOLS/Common/)** : Outils ou scripts communs pour le projet.
 - **[main.c](./main.c)** : Code principal du programme.
+
+  ### Autres fichiers
+  
 - **[Makefile](./Makefile)** : Fichier de configuration pour la compilation du projet.
 - **[Doxyfile](./Doxyfile)** : Fichier de configuration pour générer la documentation avec Doxygen.
 - **[README.md](./README.md)** : Ce fichier.
