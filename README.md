@@ -42,11 +42,11 @@ Ce dépôt contient les fichiers suivants :
 
 Voici les schémas de la maquette du projet :
 
-![Raccordement pinout PIC18F47Q10](./img/Raccordement_pinout_PIC18F47Q10.png)
+![Raccordement pinout PIC18F47Q10](.img/Raccordement_pinout_PIC18F47Q10.png)
 
 **Schéma du raccordement du PIC18F47Q10**.
 
-![Vue hardware maquette](./img/Vue_hardware_maquette.png)
+![Vue hardware maquette](./img/.png)
 
 **Vue d'ensemble de la maquette matérielle utilisée dans le projet.**
 
