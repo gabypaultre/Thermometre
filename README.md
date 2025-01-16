@@ -44,11 +44,11 @@ Voici les schémas de la maquette du projet :
 
 ![Raccordement pinout PIC18F47Q10](.img/Vue_hardware_maquette.png)
 
-**Schéma du raccordement du PIC18F47Q10**.
+**Vue d'ensemble de la maquette matérielle utilisée dans le projet.**
 
 ![Vue hardware maquette](.img/Raccordement_pinout_PIC18F47Q10.png)
 
-**Vue d'ensemble de la maquette matérielle utilisée dans le projet.**
+**Schéma du raccordement du PIC18F47Q10**.
 
 ---
 
