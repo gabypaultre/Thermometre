@@ -1,4 +1,4 @@
-# Projet Thermomètre - Système de Mesure de Température
+# Projet Thermomètre - Système de mesure de température
 
 ## Introduction
 
@@ -42,11 +42,11 @@ Ce dépôt contient les fichiers suivants :
 
 Voici les schémas de la maquette du projet :
 
-![Raccordement pinout PIC18F47Q10](.img/Raccordement_pinout_PIC18F47Q10.png)
+![Raccordement pinout PIC18F47Q10](.img/Vue_hardware_maquette.png)
 
 **Schéma du raccordement du PIC18F47Q10**.
 
-![Vue hardware maquette](./img/.png)
+![Vue hardware maquette](.img/Raccordement_pinout_PIC18F47Q10.png)
 
 **Vue d'ensemble de la maquette matérielle utilisée dans le projet.**
 
